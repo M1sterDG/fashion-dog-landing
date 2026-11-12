@@ -1,4 +1,4 @@
-import { altText, has, hero, placeholdersOn } from '../content.js'
+import { altText, heroPhoto, hero } from '../content.js'
 import { Icon } from '../components/icons.jsx'
 import { Blob, Paw } from '../components/decor.jsx'
 import { Img, Logo, Reveal, WhatsAppButton } from '../components/ui.jsx'
@@ -7,28 +7,26 @@ import { cn } from '../lib/hooks.js'
 const chipTilt = ['-rotate-2', 'rotate-1', '-rotate-1']
 
 function HeroVisual() {
-  const photo = has('hero.jpg') || placeholdersOn()
+  const photo = heroPhoto()
 
   if (!photo) {
-    // Sin foto: composición del logo con formas planas, nunca una caja vacía.
+    // Sin foto: formas planas y huellas. No se repite el logo (ya está en la barra).
     return (
       <div className="relative mx-auto aspect-square w-full max-w-sm lg:max-w-md">
         <div className="absolute top-0 right-4 h-24 w-24 rounded-full bg-orange md:h-32 md:w-32" aria-hidden="true" />
         <Blob className="absolute inset-0 h-full w-full text-cream" />
+        <Paw className="absolute inset-0 m-auto h-1/2 w-1/2 rotate-12 text-turquoise" />
         <Paw className="absolute bottom-6 left-4 h-14 w-14 -rotate-12 text-orange md:h-20 md:w-20" />
-        <Paw className="absolute top-10 left-6 h-10 w-10 rotate-12 text-turquoise md:h-14 md:w-14" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <Logo className="h-32 md:h-40" />
-        </div>
+        <Paw className="absolute top-12 left-8 h-10 w-10 -rotate-6 text-turquoise-deep md:h-14 md:w-14" />
       </div>
     )
   }
 
-  // Con foto: arco con borde naranja y el logo sobre una mancha crema en la esquina.
+  // Con foto (hero.jpg o ia-hero.jpg): arco con borde naranja y el logo pequeño sobre una mancha crema.
   return (
     <div className="relative mx-auto w-full max-w-sm pb-6 lg:max-w-md">
       <Img
-        file="hero.jpg"
+        file={photo}
         alt={altText.hero}
         priority
         hint="Foto principal, mínimo 1600 px de ancho"
@@ -45,10 +43,10 @@ function HeroVisual() {
 
 export default function Hero() {
   return (
-    <section id="inicio" className="relative overflow-hidden bg-turquoise pt-24 pb-16 text-white md:pb-20">
+    <section id="inicio" className="relative overflow-hidden bg-turquoise-deep pt-24 pb-16 text-white">
       {/* Huellas decorativas de fondo */}
-      <Paw className="pointer-events-none absolute top-24 right-4 h-20 w-20 rotate-12 text-turquoise-strong md:right-12 md:h-28 md:w-28" />
-      <Paw className="pointer-events-none absolute bottom-4 left-4 h-24 w-24 -rotate-12 text-turquoise-strong" />
+      <Paw className="pointer-events-none absolute top-24 right-4 h-20 w-20 rotate-12 text-turquoise md:right-12 md:h-28 md:w-28" />
+      <Paw className="pointer-events-none absolute bottom-4 left-4 h-24 w-24 -rotate-12 text-turquoise" />
 
       <div className="relative mx-auto grid w-full max-w-7xl items-center gap-10 px-4 lg:grid-cols-[1.3fr_1fr] lg:gap-16">
         <div>

@@ -36,8 +36,11 @@ function BentoVideo() {
   )
 }
 
-function BeforeAfter({ n }) {
+// ia: las fotos generadas con IA empiezan con "ia-" y llevan la etiqueta "Ejemplo referencial".
+// Las reales van sin etiqueta.
+function BeforeAfter({ n, ia }) {
   const [after, setAfter] = useState(false)
+  const prefix = ia ? 'ia-' : ''
   return (
     <button
       type="button"
@@ -47,18 +50,23 @@ function BeforeAfter({ n }) {
       className="relative block aspect-4/3 w-full overflow-hidden rounded-2xl bg-cream text-left sm:aspect-4/5"
     >
       <Img
-        file={`antes-${n}.jpg`}
+        file={`${prefix}antes-${n}.jpg`}
         alt={altText.antes(n)}
         hint="Foto del perro antes"
         className={cn('absolute inset-0 transition-opacity duration-500 ease-base', after ? 'opacity-0' : 'opacity-100')}
       />
       <Img
-        file={`despues-${n}.jpg`}
+        file={`${prefix}despues-${n}.jpg`}
         alt={altText.despues(n)}
         hint="Foto del perro después"
         className={cn('absolute inset-0 transition-opacity duration-500 ease-base', after ? 'opacity-100' : 'opacity-0')}
       />
-      {/* Etiqueta: 16px de radio menos 12px de margen da 4px (rounded-sm) */}
+      {/* Etiquetas: 16px de radio menos 12px de margen da 4px (rounded-sm) */}
+      {ia && (
+        <span className="caption-3 absolute top-3 left-3 rounded-sm bg-ink px-2 py-1 uppercase tracking-wide text-cream">
+          {gallery.iaTag}
+        </span>
+      )}
       <span className="caption-3 absolute bottom-3 left-3 flex items-center gap-1 rounded-sm bg-cream px-2 py-1 uppercase tracking-wide text-ink">
         <ArrowsLeftRight size={16} weight="bold" aria-hidden="true" />
         {after ? gallery.after : gallery.before}
@@ -99,9 +107,9 @@ export default function Gallery({ prev, wave }) {
             <p className="body-3 mt-2 text-ink/70">{gallery.beforeAfterHint}</p>
           </Reveal>
           <div className="mt-6 grid gap-3 sm:grid-cols-3 lg:gap-4">
-            {pairs.map((n, i) => (
-              <Reveal key={n} delay={i * 80}>
-                <BeforeAfter n={n} />
+            {pairs.map(({ n, ia }, i) => (
+              <Reveal key={`${ia ? 'ia' : 'real'}-${n}`} delay={i * 80}>
+                <BeforeAfter n={n} ia={ia} />
               </Reveal>
             ))}
           </div>

@@ -40,6 +40,7 @@ const waveColor = {
   cream: 'text-cream',
   orange: 'text-orange',
   turquoise: 'text-turquoise',
+  'turquoise-deep': 'text-turquoise-deep',
   'orange-soft': 'text-orange-soft',
   'turquoise-soft': 'text-turquoise-soft',
 }

@@ -106,6 +106,8 @@ const css = `/* Generado por scripts/extract-brand-colors.mjs a partir de ${path
   --brand-turquoise: ${hex(turquoise)};
   --brand-turquoise-strong: ${hex(mix(turquoise, black, 0.12))};
   --brand-turquoise-soft: ${hex(mix(turquoise, white, 0.85))};
+  /* Fondo para secciones con texto blanco (contraste 5 a 1). Valor fijo, no sale del logo. */
+  --brand-turquoise-deep: #367A73;
   --brand-orange: ${hex(orange)};
   --brand-orange-strong: ${hex(mix(orange, black, 0.12))};
   --brand-orange-soft: ${hex(mix(orange, white, 0.86))};

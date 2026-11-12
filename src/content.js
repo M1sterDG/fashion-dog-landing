@@ -32,10 +32,24 @@ export function photoSlots(prefix, max, total = 8) {
 }
 
 // Pares antes y después: solo cuentan los casos que tienen las dos fotos.
+// Las reales se llaman antes-N.jpg y despues-N.jpg. Las generadas con IA empiezan con "ia-"
+// (ia-antes-N.jpg y ia-despues-N.jpg) y la página les pone la etiqueta "Ejemplo referencial".
 export function pairSlots(max, total = 6) {
   const all = Array.from({ length: total }, (_, i) => i + 1)
-  if (placeholdersOn()) return all.slice(0, max)
-  return all.filter((n) => has(`antes-${n}.jpg`) && has(`despues-${n}.jpg`)).slice(0, max)
+  if (placeholdersOn()) return all.slice(0, max).map((n) => ({ n, ia: false }))
+  const pairs = []
+  for (const n of all) {
+    if (has(`antes-${n}.jpg`) && has(`despues-${n}.jpg`)) pairs.push({ n, ia: false })
+    else if (has(`ia-antes-${n}.jpg`) && has(`ia-despues-${n}.jpg`)) pairs.push({ n, ia: true })
+  }
+  return pairs.slice(0, max)
+}
+
+// Foto principal del hero: hero.jpg y, si no existe, ia-hero.jpg. null si no hay ninguna.
+export function heroPhoto() {
+  if (has('hero.jpg')) return 'hero.jpg'
+  if (has('ia-hero.jpg')) return 'ia-hero.jpg'
+  return placeholdersOn() ? 'hero.jpg' : null
 }
 
 export const business = {
@@ -100,6 +114,7 @@ export const payments = {
 export const navAll = [
   { id: 'como-funciona', label: 'Cómo funciona' },
   { id: 'servicios', label: 'Servicios' },
+  { id: 'estilos', label: 'Estilos' },
   { id: 'galeria', label: 'Galería' },
   { id: 'tipo-de-pelo', label: 'Tipo de pelo' },
   { id: 'donde-estamos', label: 'Dónde estamos' },
@@ -208,7 +223,25 @@ export const services = {
 
 /* ---------- Lema: el otro lugar donde vive la transparencia ---------- */
 export const tagline = {
-  text: 'Ofrecemos transparencia en el servicio. Sabes qué le hacemos a tu perro, cuánto cuesta y cómo le fue.',
+  text: 'Sabes qué le hacemos, cuánto cuesta y cómo le fue.',
+}
+
+/* ---------- Estilos de corte: solo se muestran los que tienen foto en availableImages ---------- */
+export const estilos = {
+  eyebrow: 'Estilos de corte',
+  title: 'Elige cómo lo quieres',
+  intro: 'Mira un estilo de referencia y cuéntanos cuál prefieres al reservar.',
+  tag: 'Imagen referencial',
+  items: [
+    { key: 'osito', file: 'estilo-osito.jpg', name: 'Osito', text: 'Pelo parejo y redondeado, con aspecto de peluche.' },
+    { key: 'cachorro', file: 'estilo-cachorro.jpg', name: 'Cachorro', text: 'Corte corto y parejo en todo el cuerpo, fácil de mantener.' },
+    { key: 'raza', file: 'estilo-raza.jpg', name: 'Corte de raza', text: 'El corte clásico de cada raza, según su estilo.' },
+    { key: 'higienico', file: 'estilo-higienico.jpg', name: 'Corte higiénico', text: 'Recorte de zonas delicadas para que esté limpio y cómodo.' },
+  ],
+}
+export function estiloSlots() {
+  if (placeholdersOn()) return estilos.items
+  return estilos.items.filter((e) => has(e.file))
 }
 
 export const gallery = {
@@ -218,6 +251,7 @@ export const gallery = {
   beforeAfterHint: 'Toca cada foto para ver el antes y el después.',
   before: 'Antes',
   after: 'Después',
+  iaTag: 'Ejemplo referencial',
 }
 
 export const coats = {

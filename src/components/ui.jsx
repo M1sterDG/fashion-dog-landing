@@ -9,7 +9,7 @@ import { url } from '../lib/url.js'
 /* ---------- Placeholders de contenido ({{precio}}, {{shampoos}}...) ---------- */
 export function Ph({ children }) {
   return (
-    <mark className="box-decoration-clone rounded-sm border border-dashed border-ink/40 bg-cream px-1 font-medium text-ink">
+    <mark className="box-decoration-clone rounded-sm border border-dashed border-ink/40 bg-cream px-1 font-semibold text-ink">
       {children}
     </mark>
   )
@@ -138,7 +138,8 @@ export function Logo({ className = 'h-10' }) {
 const bgClass = {
   cream: 'bg-cream text-ink',
   orange: 'bg-orange text-ink',
-  turquoise: 'bg-turquoise text-white',
+  turquoise: 'bg-turquoise text-ink',
+  'turquoise-deep': 'bg-turquoise-deep text-white',
   'orange-soft': 'bg-orange-soft text-ink',
   'turquoise-soft': 'bg-turquoise-soft text-ink',
 }

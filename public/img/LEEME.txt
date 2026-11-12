@@ -5,10 +5,22 @@ Para ver los marcadores mientras desarrollas, abre http://localhost:5173/?placeh
 
 logo.png                fondo transparente (ya está). logo-original.png es el archivo sin procesar
                         y es el que lee "npm run brand:colors" para sacar los colores
-hero.jpg                perro en la peluquería, mínimo 1600 px de ancho (también es la og:image)
+
+HERO
+hero.jpg                foto real del hero, mínimo 1600 px de ancho (también es la og:image)
+ia-hero.jpg             alternativa generada con IA; se usa solo si no existe hero.jpg
+
+ESTILOS DE CORTE (la página pone la etiqueta "Imagen referencial")
+estilo-osito.jpg  estilo-cachorro.jpg  estilo-raza.jpg  estilo-higienico.jpg
+
+GALERÍA
 galeria-1.jpg ... galeria-8.jpg    perros ya arreglados (se muestran hasta 5)
 antes-1.jpg ... antes-6.jpg        van en pareja con despues-N.jpg (se muestran hasta 3 casos)
 despues-1.jpg ... despues-6.jpg
+ia-antes-N.jpg, ia-despues-N.jpg   mismas parejas pero generadas con IA: se muestran con la
+                                   etiqueta "Ejemplo referencial". Las reales van sin etiqueta
+
+LOCAL Y EQUIPO
 local-1.jpg ... local-3.jpg        fachada, recepción, zona de baño
 equipo-1.jpg                       groomers (si no hay, no aparece el bloque "Quiénes lo atienden")
 video-1.mp4                        opcional, clip corto en bucle (reemplaza la segunda foto del bento)

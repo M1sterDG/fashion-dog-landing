@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://peluqueriacaninafashiondog.com/sitemap.xml

@@ -1,0 +1,116 @@
+@import "tailwindcss";
+@import "@fontsource/poppins/latin-400.css";
+@import "@fontsource/poppins/latin-500.css";
+@import "@fontsource/poppins/latin-600.css";
+@import "./styles/brand-colors.css";
+
+/* Colores de marca: salen de brand-colors.css (script sobre el logo). */
+@theme inline {
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --color-cream: #fffbf3;
+  --color-ink: #1c1917;
+  --color-turquoise: var(--brand-turquoise);
+  --color-turquoise-strong: var(--brand-turquoise-strong);
+  --color-turquoise-soft: var(--brand-turquoise-soft);
+  --color-orange: var(--brand-orange);
+  --color-orange-strong: var(--brand-orange-strong);
+  --color-orange-soft: var(--brand-orange-soft);
+  --ease-base: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------- Estilos de texto nombrados (B1) ---------- */
+@utility heading-1 { @apply text-6xl font-semibold; }
+@utility heading-2 { @apply text-5xl font-semibold; }
+@utility heading-3 { @apply text-4xl font-semibold; }
+@utility heading-4 { @apply text-3xl font-semibold; }
+@utility heading-5 { @apply text-2xl font-semibold; }
+@utility heading-6 { @apply text-xl font-semibold; }
+@utility title-1 { @apply text-xl font-medium; }
+@utility title-2 { @apply text-lg font-medium; }
+@utility title-3 { @apply text-base font-medium; }
+@utility title-4 { @apply text-sm font-medium; }
+@utility title-5 { @apply text-xs font-medium; }
+@utility body-1 { @apply text-base font-semibold; }
+@utility body-2 { @apply text-base font-medium; }
+@utility body-3 { @apply text-base font-normal; }
+@utility body-4 { @apply text-sm font-semibold; }
+@utility body-5 { @apply text-sm font-medium; }
+@utility body-6 { @apply text-sm font-normal; }
+@utility button-lg { @apply text-lg font-semibold; }
+@utility button-md { @apply text-base font-semibold; }
+@utility button-sm { @apply text-sm font-semibold; }
+@utility button-xsm { @apply text-xs font-semibold; }
+@utility caption-1 { @apply text-sm font-medium; }
+@utility caption-2 { @apply text-sm font-normal; }
+@utility caption-3 { @apply text-xs font-semibold; }
+@utility caption-4 { @apply text-xs font-medium; }
+@utility caption-5 { @apply text-xs font-normal; }
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 96px;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-cream font-sans text-ink antialiased;
+    overflow-x: clip;
+  }
+  h1, h2, h3, h4, h5, h6 { text-wrap: balance; }
+  p, li, summary, figcaption { text-wrap: pretty; }
+  :focus-visible {
+    outline: 2px solid var(--color-ink);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+  img, video { display: block; max-width: 100%; }
+}
+
+/* ---------- Movimiento (B7): solo transform y opacity ---------- */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(2rem);
+  transition-property: transform, opacity;
+  transition-duration: 700ms;
+  transition-timing-function: var(--ease-base);
+  transition-delay: var(--d, 0ms);
+}
+.js .reveal.is-visible { opacity: 1; transform: none; }
+
+/* Palabras del lema (B11) */
+.js .tag-word {
+  opacity: 0.3;
+  transition: opacity 600ms var(--ease-base);
+  transition-delay: var(--d, 0ms);
+}
+.js .tag-word.is-on { opacity: 1; }
+
+/* Entrada de los enlaces del menú móvil: 24px hacia arriba, 60ms entre cada uno, tope de 400ms */
+.menu-item {
+  opacity: 0;
+  transform: translateY(1.5rem);
+  transition-property: transform, opacity;
+  transition-duration: 500ms;
+  transition-timing-function: var(--ease-base);
+}
+.menu-open .menu-item {
+  opacity: 1;
+  transform: none;
+  transition-delay: min(calc(var(--i, 0) * 60ms), 400ms);
+}
+
+/* Respuesta del FAQ: aparece solo con opacidad */
+details[open] .faq-answer { animation: faq-in 500ms var(--ease-base); }
+@keyframes faq-in { from { opacity: 0; } to { opacity: 1; } }
+details > summary { list-style: none; }
+details > summary::-webkit-details-marker { display: none; }
+details[open] .faq-caret { transform: rotate(180deg); }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .js .reveal { transform: none; transition-duration: 300ms; }
+  .js .tag-word { opacity: 1; transition: none; }
+  .menu-item { transform: none; transition-duration: 300ms; }
+  .menu-open .menu-item { transition-delay: 0ms; }
+  .motion-safe-move { transform: none !important; }
+}

@@ -1,0 +1,12 @@
+Pon aquí tus fotos con estos nombres exactos. Mientras falte una, la página
+muestra un marcador con el nombre del archivo esperado.
+
+logo.png o logo.svg   fondo transparente (después corre: npm run brand:colors)
+logo-redondo.png
+hero.jpg              perro en la peluquería, mínimo 1600 px de ancho (también es la og:image)
+antes-1.jpg ... antes-6.jpg
+despues-1.jpg ... despues-6.jpg
+galeria-1.jpg ... galeria-8.jpg    perros ya arreglados
+local-1.jpg ... local-3.jpg        fachada, recepción, zona de baño
+equipo-1.jpg                       groomers
+video-1.mp4                        opcional, clip corto en bucle

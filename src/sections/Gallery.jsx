@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { ArrowsLeftRight } from '@phosphor-icons/react'
-import { LIMITS, altText, gallery, has, pairSlots, photoSlots } from '../content.js'
+import { LIMITS, altText, gallery, gallerySlots, has, pairSlots } from '../content.js'
 import { Img, Reveal, Section, SectionHeader } from '../components/ui.jsx'
 import { cn } from '../lib/hooks.js'
 import { url } from '../lib/url.js'
@@ -47,7 +47,7 @@ function BeforeAfter({ n, ia }) {
       aria-pressed={after}
       onClick={() => setAfter((v) => !v)}
       aria-label={`Caso ${n}: mostrar ${after ? 'antes' : 'después'}`}
-      className="relative block aspect-4/3 w-full overflow-hidden rounded-2xl bg-cream text-left sm:aspect-4/5"
+      className="relative block aspect-square w-full overflow-hidden rounded-2xl bg-cream text-left sm:aspect-4/5"
     >
       <Img
         file={`${prefix}antes-${n}.jpg`}
@@ -77,24 +77,37 @@ function BeforeAfter({ n, ia }) {
 
 // Fotos que se van a mostrar. Si ambas listas están vacías, Home no dibuja la sección.
 export function galleryContent() {
-  return { bento: photoSlots('galeria', LIMITS.bento), pairs: pairSlots(LIMITS.beforeAfter) }
+  const bento = gallerySlots(LIMITS.bento)
+  const pairs = pairSlots(LIMITS.beforeAfter)
+  // onlyIa: todo lo que se muestra es generado con IA. Con una sola foto real vuelve el título original.
+  const onlyIa = bento.length + pairs.length > 0 && [...bento, ...pairs].every((x) => x.ia)
+  return { bento, pairs, onlyIa }
 }
 
 export default function Gallery({ prev, wave }) {
-  const { bento, pairs } = galleryContent()
+  const { bento, pairs, onlyIa } = galleryContent()
   const layout = layouts[bento.length] ?? []
   const videoSlot = has('video-1.mp4') ? 1 : -1
 
   return (
     <Section id="galeria" bg="cream" prev={prev} wave={wave}>
-      <SectionHeader eyebrow={gallery.eyebrow} title={gallery.title} />
+      <SectionHeader eyebrow={gallery.eyebrow} title={onlyIa ? gallery.titleIa : gallery.title} />
 
       {bento.length > 0 && (
         <Reveal className="mt-10 grid auto-rows-[10rem] grid-cols-2 gap-3 md:auto-rows-[14rem] md:grid-cols-4">
-          {bento.map((n, i) => (
-            <div key={n} className={cn('relative overflow-hidden rounded-2xl bg-orange-soft', layout[i])}>
-              <Img file={`galeria-${n}.jpg`} alt={altText.galeria(n)} hint="Perro ya arreglado" className="h-full w-full" />
+          {bento.map(({ n, ia }, i) => (
+            <div key={`${ia ? 'ia' : 'real'}-${n}`} className={cn('relative overflow-hidden rounded-2xl bg-orange-soft', layout[i])}>
+              <Img
+                file={`${ia ? 'ia-' : ''}galeria-${n}.jpg`}
+                alt={altText.galeria(n)}
+                hint="Perro ya arreglado"
+                className="h-full w-full"
+              />
               {i === videoSlot && <BentoVideo />}
+              {/* Etiqueta: 16px de radio menos 8px de margen da 8px (rounded-lg) */}
+              {ia && (
+                <span className="caption-3 absolute bottom-2 left-2 rounded-lg bg-cream px-2 py-1 text-ink">{gallery.refTag}</span>
+              )}
             </div>
           ))}
         </Reveal>

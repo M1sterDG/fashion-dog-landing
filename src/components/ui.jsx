@@ -1,7 +1,7 @@
 import { ImageSquare } from '@phosphor-icons/react'
 import { WhatsappLogo } from '@phosphor-icons/react'
 import { cn, useRevealOnce } from '../lib/hooks.js'
-import { has, payments, placeholdersOn, whatsappUrl } from '../content.js'
+import { focusFor, has, payments, placeholdersOn, whatsappUrl } from '../content.js'
 import { Icon } from './icons.jsx'
 import { Wave } from './decor.jsx'
 import { url } from '../lib/url.js'
@@ -64,6 +64,7 @@ export function Img({ file, alt, className, priority = false, hint }) {
         fetchPriority={priority ? 'high' : undefined}
         decoding="async"
         className="h-full w-full object-cover"
+        style={{ objectPosition: focusFor(file) }}
       />
     </div>
   )

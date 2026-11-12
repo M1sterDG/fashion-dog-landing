@@ -12,7 +12,16 @@
  *   export const availableImages = ['hero.jpg', 'galeria-1.jpg', 'galeria-2.jpg',
  *     'antes-1.jpg', 'despues-1.jpg', 'local-1.jpg', 'equipo-1.jpg', 'video-1.mp4']
  * ------------------------------------------------------------------ */
-export const availableImages = []
+export const availableImages = [
+  'ia-hero.jpg',
+  'estilo-osito.jpg',
+  'estilo-cachorro.jpg',
+  'estilo-raza.jpg',
+  'estilo-higienico.jpg',
+  'ia-antes-1.jpg', 'ia-antes-2.jpg', 'ia-antes-3.jpg',
+  'ia-despues-1.jpg', 'ia-despues-2.jpg', 'ia-despues-3.jpg',
+  'ia-galeria-1.jpg', 'ia-galeria-2.jpg', 'ia-galeria-3.jpg', 'ia-galeria-4.jpg', 'ia-galeria-5.jpg',
+]
 
 // Máximos por sección.
 export const LIMITS = { bento: 5, beforeAfter: 3, local: 3 }
@@ -31,6 +40,40 @@ export function photoSlots(prefix, max, total = 8) {
   return all.filter((n) => has(`${prefix}-${n}.jpg`)).slice(0, max)
 }
 
+// Fotos de la galería (bento). Las reales son galeria-N.jpg; las generadas con IA empiezan con "ia-"
+// (ia-galeria-N.jpg) y llevan la etiqueta "Imagen referencial". Si existen ambas para el mismo N, gana la real.
+export function gallerySlots(max, total = 8) {
+  const all = Array.from({ length: total }, (_, i) => i + 1)
+  if (placeholdersOn()) return all.slice(0, max).map((n) => ({ n, ia: false }))
+  const out = []
+  for (const n of all) {
+    if (has(`galeria-${n}.jpg`)) out.push({ n, ia: false })
+    else if (has(`ia-galeria-${n}.jpg`)) out.push({ n, ia: true })
+  }
+  return out.slice(0, max)
+}
+
+// Punto de enfoque (object-position) de cada foto, para que el recorte no corte la cara del perro.
+// Si una foto no aparece aquí se centra. Ajusta estos valores cuando cambies las fotos.
+export const imageFocus = {
+  'ia-hero.jpg': '55% 50%',
+  'estilo-osito.jpg': '50% 50%',
+  'estilo-cachorro.jpg': '90% 50%',
+  'estilo-raza.jpg': '70% 50%',
+  'estilo-higienico.jpg': '50% 40%',
+  'ia-galeria-1.jpg': '56% 35%',
+  'ia-galeria-2.jpg': '50% 30%',
+  'ia-galeria-3.jpg': '50% 30%',
+  'ia-galeria-4.jpg': '50% 30%',
+  'ia-galeria-5.jpg': '50% 30%',
+}
+export function focusFor(file) {
+  if (imageFocus[file]) return imageFocus[file]
+  // Antes y después con IA: fotos verticales con la cara en el tercio superior.
+  if (/^ia-(antes|despues)-/.test(file)) return '50% 25%'
+  return '50% 50%'
+}
+
 // Pares antes y después: solo cuentan los casos que tienen las dos fotos.
 // Las reales se llaman antes-N.jpg y despues-N.jpg. Las generadas con IA empiezan con "ia-"
 // (ia-antes-N.jpg y ia-despues-N.jpg) y la página les pone la etiqueta "Ejemplo referencial".
@@ -46,6 +89,7 @@ export function pairSlots(max, total = 6) {
 }
 
 // Foto principal del hero: hero.jpg y, si no existe, ia-hero.jpg. null si no hay ninguna.
+export const heroIsIa = () => (heroPhoto() ?? '').startsWith('ia-')
 export function heroPhoto() {
   if (has('hero.jpg')) return 'hero.jpg'
   if (has('ia-hero.jpg')) return 'ia-hero.jpg'
@@ -247,6 +291,9 @@ export function estiloSlots() {
 export const gallery = {
   eyebrow: 'Galería',
   title: 'Así salen de Fashion Dog',
+  // Mientras todas las fotos sean generadas con IA, la galería usa este título. Con fotos reales vuelve al original.
+  titleIa: 'Así pueden quedar',
+  refTag: 'Imagen referencial',
   beforeAfterTitle: 'Antes y después',
   beforeAfterHint: 'Toca cada foto para ver el antes y el después.',
   before: 'Antes',

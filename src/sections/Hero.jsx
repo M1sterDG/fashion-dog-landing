@@ -1,4 +1,4 @@
-import { altText, heroPhoto, hero } from '../content.js'
+import { altText, estilos, heroIsIa, heroPhoto, hero } from '../content.js'
 import { Icon } from '../components/icons.jsx'
 import { Blob, Paw } from '../components/decor.jsx'
 import { Img, Logo, Reveal, WhatsAppButton } from '../components/ui.jsx'
@@ -25,13 +25,19 @@ function HeroVisual() {
   // Con foto (hero.jpg o ia-hero.jpg): arco con borde naranja y el logo pequeño sobre una mancha crema.
   return (
     <div className="relative mx-auto w-full max-w-sm pb-6 lg:max-w-md">
-      <Img
-        file={photo}
-        alt={altText.hero}
-        priority
-        hint="Foto principal, mínimo 1600 px de ancho"
-        className="aspect-4/5 rounded-t-full border-8 border-orange bg-cream"
-      />
+      <div className="relative">
+        <Img
+          file={photo}
+          alt={altText.hero}
+          priority
+          hint="Foto principal, mínimo 1600 px de ancho"
+          className="aspect-4/5 rounded-t-full border-8 border-orange bg-cream"
+        />
+        {/* Si la foto es generada con IA (ia-hero.jpg) lleva la etiqueta "Imagen referencial" */}
+        {heroIsIa() && (
+          <span className="caption-3 absolute right-4 bottom-4 rounded-lg bg-cream px-2 py-1 text-ink">{estilos.tag}</span>
+        )}
+      </div>
       <div className="absolute bottom-0 left-0 flex h-36 w-44 items-center justify-center">
         <Blob className="absolute inset-0 h-full w-full text-cream" />
         <Logo className="relative h-16" />

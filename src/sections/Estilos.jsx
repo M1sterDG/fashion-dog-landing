@@ -17,7 +17,7 @@ export default function Estilos({ prev, wave }) {
                 file={e.file}
                 alt={`Estilo de corte ${e.name}`}
                 hint={`Estilo ${e.name}`}
-                className="aspect-4/5 rounded-2xl bg-cream"
+                className="aspect-4/3 rounded-2xl bg-cream"
               />
               {/* Etiqueta: 16px de radio menos 8px de margen da 8px (rounded-lg) */}
               <span className="caption-3 absolute bottom-2 left-2 rounded-lg bg-cream px-2 py-1 text-ink">{estilos.tag}</span>

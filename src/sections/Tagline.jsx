@@ -35,7 +35,7 @@ export default function Tagline({ prev, wave }) {
   const words = tagline.text.split(' ')
 
   return (
-    <section id="lema" className="relative overflow-hidden bg-turquoise pt-20 pb-16 text-white md:pb-20">
+    <section id="lema" className="relative overflow-hidden bg-turquoise pt-20 pb-16 text-white">
       {prev && <Wave color={prev} variant={wave} />}
       <PawTrail className="absolute top-16 right-0 hidden h-80 w-48 md:block lg:right-16" />
       <div className="relative mx-auto w-full max-w-6xl px-4">

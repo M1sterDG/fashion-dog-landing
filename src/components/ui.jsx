@@ -146,7 +146,7 @@ const bgClass = {
 // bg: color de la sección. prev: color de la sección anterior, para pintar la onda.
 export function Section({ id, bg = 'cream', prev, wave = 0, className, children }) {
   return (
-    <section id={id} className={cn('relative pt-20 pb-16 md:pb-20', bgClass[bg], className)}>
+    <section id={id} className={cn('relative pt-20 pb-16', bgClass[bg], className)}>
       {prev && <Wave color={prev} variant={wave} />}
       <div className="relative mx-auto w-full max-w-6xl px-4">{children}</div>
     </section>

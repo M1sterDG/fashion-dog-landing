@@ -1,4 +1,4 @@
-import { business, faqs } from './content.js'
+import { business, faqs, services } from './content.js'
 
 // Dominio y subruta. En producción en el dominio propio no hace falta definir nada.
 // Para GitHub Pages el workflow define SITE_URL, SITE_BASE y NOINDEX=1 (copia de prueba, no se indexa).
@@ -13,7 +13,7 @@ const plain = (t) => t.replace(/\{\{[^}]+\}\}/g, 'por confirmar')
 export const seo = {
   title: 'Peluquería canina en Salamanca, Ate | Fashion Dog',
   description:
-    'Peluquería canina en Salamanca, Ate. Baño y baño con corte con precio claro. Pagas con efectivo, tarjeta o Yape. Reserva por WhatsApp.',
+    'Peluquería canina en Salamanca, Ate. Baño desde S/ 35 y baño + corte desde S/ 50. Pagas con efectivo, tarjeta o Yape. Reserva por WhatsApp.',
   image: `${ROOT}img/hero.jpg`,
   url: ROOT,
 }
@@ -94,6 +94,7 @@ export function localBusinessJsonLd() {
       opens: h.opens,
       closes: h.closes,
     })),
+    priceRange: services.priceRange,
     paymentAccepted: 'Efectivo, tarjeta, Yape',
     currenciesAccepted: 'PEN',
     sameAs: [business.facebook],

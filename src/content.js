@@ -117,7 +117,7 @@ export const hero = {
   chips: [
     { icon: 'Clock', text: 'Lun a Sáb' },
     { icon: 'CreditCard', text: 'Efectivo · Tarjeta · Yape' },
-    { icon: 'Tag', text: 'Perros grandes S/ 50' },
+    { icon: 'Tag', text: 'Baño desde S/ 35' },
   ],
 }
 
@@ -152,19 +152,30 @@ export const how = {
 export const services = {
   eyebrow: 'Servicios y precios',
   title: 'Elige el servicio de tu perro',
-  intro: 'Reserva por WhatsApp. El precio depende del tamaño de tu perro.',
   reserve: 'Reservar este servicio',
   items: [
     {
       icon: 'Bathtub',
       title: 'Baño',
-      text: 'Baño con shampoo para perros, enjuague completo y secado.',
+      lead: 'El baño incluye:',
+      includes: [
+        { icon: 'PawPrint', text: 'Corte de uñas' },
+        { icon: 'Ear', text: 'Limpieza de oídos' },
+        { icon: 'SprayBottle', text: 'Perfume' },
+        { icon: 'Gift', text: 'Lazo' },
+        { icon: 'HandSoap', text: 'Limpieza de glándulas perianales' },
+        { icon: 'Dog', text: 'Recorte de carita y patitas, si lo necesita' },
+      ],
       whatsappService: 'Baño',
     },
     {
       icon: 'Scissors',
       title: 'Baño + corte',
-      text: 'El baño completo más corte según el tipo de pelo de tu perro.',
+      lead: 'Todo lo del baño, más el corte según su tipo de pelo.',
+      includes: [
+        { icon: 'Bathtub', text: 'Todo lo del baño' },
+        { icon: 'Scissors', text: 'Corte según su tipo de pelo' },
+      ],
       whatsappService: 'Baño + corte',
     },
   ],
@@ -172,11 +183,27 @@ export const services = {
     { icon: 'Flask', text: 'Usamos 2 tipos de shampoo: {{shampoos}}.' },
     { icon: 'Stethoscope', text: 'Baño medicado solo con indicación de tu veterinario.' },
   ],
+  // Precios confirmados por recepción. "from" marca los precios que son "desde".
   tiers: [
-    { size: 'Perros pequeños', note: '', price: '{{precio}}' },
-    { size: 'Perros medianos', note: '', price: '{{precio}}' },
-    { size: 'Perros grandes', note: 'De tamaño Golden a Rottweiler', price: 'S/ 50', includes: '{{qué incluye}}' },
+    {
+      size: 'Pequeños y medianos',
+      note: '',
+      prices: [
+        { label: 'Baño', from: true, amount: 'S/ 35' },
+        { label: 'Baño + corte', from: true, amount: 'S/ 50' },
+      ],
+    },
+    {
+      size: 'Grandes',
+      note: 'De tamaño Golden a Rottweiler',
+      prices: [
+        { label: 'Baño', from: false, amount: 'S/ 50' },
+        { label: 'Baño + corte', from: false, amount: 'S/ 70' },
+      ],
+    },
   ],
+  priceNote: 'El precio exacto depende del tamaño y del estado del pelo. Te lo confirmamos por WhatsApp antes de tu cita.',
+  priceRange: 'S/ 35 - S/ 70',
 }
 
 /* ---------- Lema: el otro lugar donde vive la transparencia ---------- */
@@ -279,7 +306,7 @@ export const where = {
 export const faqs = [
   {
     q: '¿Cuánto cuesta y cómo se paga?',
-    a: 'El precio depende del tamaño de tu perro. Perros grandes, de tamaño Golden a Rottweiler: S/ 50 ({{qué incluye}}). Perros pequeños y medianos: {{precio}}. Aceptamos efectivo, tarjeta y Yape.',
+    a: 'Pequeños y medianos: baño desde S/ 35 y baño + corte desde S/ 50. Grandes, de tamaño Golden a Rottweiler: baño S/ 50 y baño + corte S/ 70. El precio exacto depende del tamaño y del estado del pelo, y te lo confirmamos por WhatsApp antes de tu cita. Aceptamos efectivo, tarjeta y Yape.',
   },
   {
     q: '¿Cómo sé qué le hicieron a mi perro?',

@@ -1,10 +1,11 @@
 import { PawPrint } from '@phosphor-icons/react'
 import { Button, Logo } from '../components/ui.jsx'
+import { url } from '../lib/url.js'
 
 export default function NotFound() {
   return (
     <main id="contenido" className="flex min-h-svh flex-col items-center justify-center gap-6 bg-turquoise-soft px-4 py-16 text-center">
-      <a href="/" aria-label="Ir al inicio" className="rounded-full">
+      <a href={url()} aria-label="Ir al inicio" className="rounded-full">
         <Logo className="h-32" />
       </a>
       <span className="flex h-16 w-16 items-center justify-center rounded-full bg-orange" aria-hidden="true">
@@ -17,7 +18,7 @@ export default function NotFound() {
           El enlace puede estar mal escrito o la página ya no existe. Vuelve al inicio para ver los servicios y reservar por WhatsApp.
         </p>
       </div>
-      <Button href="/" className="w-full sm:w-auto">
+      <Button href={url()} className="w-full sm:w-auto">
         Volver al inicio
       </Button>
     </main>

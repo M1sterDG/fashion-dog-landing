@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useState } from 'react'
 import { WhatsappLogo } from '@phosphor-icons/react'
-import { nav, whatsappUrl } from '../content.js'
+import { whatsappUrl } from '../content.js'
 import { cn, useActiveSection, useAnyInView } from '../lib/hooks.js'
 import { Logo, WhatsAppButton, trackWhatsApp } from './ui.jsx'
 
-const ids = nav.map((n) => n.id)
-
-export default function Nav() {
+// items: enlaces del menú que existen en la página (una sección oculta no aparece).
+export default function Nav({ items }) {
   const [open, setOpen] = useState(false)
-  const active = useActiveSection(ids)
+  const navIds = useMemo(() => items.map((n) => n.id), [items])
+  const active = useActiveSection(navIds)
 
   useEffect(() => {
     document.body.style.overflow = open ? 'hidden' : ''
@@ -32,8 +32,8 @@ export default function Nav() {
           open ? 'menu-open opacity-100' : 'pointer-events-none opacity-0',
         )}
       >
-        <ul className="mx-auto flex h-full max-w-6xl flex-col justify-center gap-4 px-4 pt-24 pb-16">
-          {nav.map((n, i) => (
+        <ul className="mx-auto flex h-full max-w-6xl flex-col justify-center gap-4 px-4 pt-24 pb-16 text-ink">
+          {items.map((n, i) => (
             <li key={n.id} className="menu-item" style={{ '--i': i }}>
               <a
                 href={`#${n.id}`}
@@ -41,31 +41,31 @@ export default function Nav() {
                 aria-current={active === n.id ? 'location' : undefined}
                 className={cn(
                   'heading-5 block rounded-2xl px-3 py-2 transition-colors duration-300 ease-base',
-                  active === n.id ? 'bg-turquoise-soft' : 'hover:bg-turquoise-soft',
+                  active === n.id ? 'bg-turquoise' : 'hover:bg-turquoise-soft',
                 )}
               >
                 {n.label}
               </a>
             </li>
           ))}
-          <li className="menu-item mt-4" style={{ '--i': nav.length }}>
+          <li className="menu-item mt-4" style={{ '--i': items.length }}>
             <WhatsAppButton place="menu" className="w-full" />
           </li>
         </ul>
       </div>
 
       {/* Barra flotante */}
-      <header className="pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4">
+      <header className="pointer-events-none fixed inset-x-0 top-4 z-50 flex justify-center px-4 text-ink">
         <nav
           aria-label="Principal"
-          className="pointer-events-auto flex items-center gap-6 rounded-full border border-ink/10 bg-cream/70 py-2 pr-2 pl-3 backdrop-blur-md"
+          className="pointer-events-auto flex items-center gap-6 rounded-full border border-ink/10 bg-cream/80 py-2 pr-2 pl-3 backdrop-blur-md"
         >
           <a href="#inicio" aria-label="Ir al inicio" className="flex items-center rounded-full">
             <Logo className="h-12" />
           </a>
 
           <ul className="hidden items-center gap-1 lg:flex">
-            {nav.map((n) => (
+            {items.map((n) => (
               <li key={n.id}>
                 <a
                   href={`#${n.id}`}

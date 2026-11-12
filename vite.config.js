@@ -1,5 +1,3 @@
-import fs from 'node:fs'
-import path from 'node:path'
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
@@ -18,10 +16,8 @@ function seoHead() {
   }
 }
 
-// video-1.mp4 es opcional: si existe al iniciar, la galería lo muestra.
-const hasVideo = fs.existsSync(path.resolve(import.meta.dirname, 'public/img/video-1.mp4'))
-
 export default defineConfig({
+  // Subruta del sitio. "/" en el dominio propio; "/nombre-del-repo/" en GitHub Pages.
+  base: process.env.SITE_BASE || '/',
   plugins: [react(), tailwindcss(), seoHead()],
-  define: { __HAS_VIDEO__: JSON.stringify(hasVideo) },
 })

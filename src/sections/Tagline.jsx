@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react'
-import { PawPrint } from '@phosphor-icons/react'
 import { tagline } from '../content.js'
+import { Wave, PawTrail } from '../components/decor.jsx'
 
 // B11: cada palabra pasa de 30% de opacidad a 100% cuando cruza una línea de activación.
 // IntersectionObserver por palabra, sin listener de scroll.
-export default function Tagline() {
+export default function Tagline({ prev, wave }) {
   const wrap = useRef(null)
 
   useEffect(() => {
@@ -35,12 +35,11 @@ export default function Tagline() {
   const words = tagline.text.split(' ')
 
   return (
-    <section id="lema" className="bg-orange-soft py-24">
-      <div className="mx-auto w-full max-w-6xl px-4">
-        <span className="flex h-12 w-12 items-center justify-center rounded-full bg-orange" aria-hidden="true">
-          <PawPrint size={28} weight="fill" />
-        </span>
-        <p ref={wrap} className="heading-4 md:heading-3 mt-6 max-w-[680px]">
+    <section id="lema" className="relative overflow-hidden bg-turquoise pt-20 pb-16 text-white md:pb-20">
+      {prev && <Wave color={prev} variant={wave} />}
+      <PawTrail className="absolute top-16 right-0 hidden h-80 w-48 md:block lg:right-16" />
+      <div className="relative mx-auto w-full max-w-6xl px-4">
+        <p ref={wrap} className="heading-3 md:heading-2 xl:heading-1 max-w-[680px]">
           {words.map((w, i) => (
             <span key={i}>
               <span className="tag-word inline-block">{w}</span>{' '}

@@ -2,12 +2,45 @@
 // y se muestran resaltados en la página hasta que los reemplaces.
 // Regla de redacción: sin guiones dentro de las frases.
 
-export const SITE_URL = 'https://peluqueriacaninafashiondog.com'
+/* ------------------------------------------------------------------ *
+ * FOTOS DISPONIBLES
+ * Agrega aquí el nombre de cada foto que ya pusiste en public/img/.
+ * Una sección de fotos solo se muestra si tiene al menos una foto real.
+ * Para ver los marcadores mientras desarrollas, abre la página con ?placeholders=1
+ *
+ * Ejemplo:
+ *   export const availableImages = ['hero.jpg', 'galeria-1.jpg', 'galeria-2.jpg',
+ *     'antes-1.jpg', 'despues-1.jpg', 'local-1.jpg', 'equipo-1.jpg', 'video-1.mp4']
+ * ------------------------------------------------------------------ */
+export const availableImages = []
+
+// Máximos por sección.
+export const LIMITS = { bento: 5, beforeAfter: 3, local: 3 }
+
+export const has = (file) => availableImages.includes(file)
+
+// Modo de desarrollo: ?placeholders=1 muestra marcadores donde falta una foto.
+export function placeholdersOn() {
+  return typeof window !== 'undefined' && new URLSearchParams(window.location.search).get('placeholders') === '1'
+}
+
+// Números de foto que se deben mostrar para un prefijo (galeria, local...).
+export function photoSlots(prefix, max, total = 8) {
+  const all = Array.from({ length: total }, (_, i) => i + 1)
+  if (placeholdersOn()) return all.slice(0, max)
+  return all.filter((n) => has(`${prefix}-${n}.jpg`)).slice(0, max)
+}
+
+// Pares antes y después: solo cuentan los casos que tienen las dos fotos.
+export function pairSlots(max, total = 6) {
+  const all = Array.from({ length: total }, (_, i) => i + 1)
+  if (placeholdersOn()) return all.slice(0, max)
+  return all.filter((n) => has(`antes-${n}.jpg`) && has(`despues-${n}.jpg`)).slice(0, max)
+}
 
 export const business = {
   name: 'Peluquería Canina Fashion Dog',
   short: 'Fashion Dog',
-  tagline: 'En Fashion Dog Salamanca, ofrecemos transparencia en el servicio',
   streetAddress: 'Av. Paracas 363, Urb. Salamanca',
   locality: 'Ate',
   region: 'Lima',
@@ -20,20 +53,32 @@ export const business = {
   facebook: 'https://www.facebook.com/peluqueriacaninafashiondog',
   // SUPUESTO: zonas tomadas de la lista de Facebook, por confirmar.
   zones: ['Ate', 'Salamanca', 'San Borja', 'Lima', 'La Molina'],
-  hours: '{{horario}}',
+  // Horario confirmado por recepción.
+  hours: [
+    { days: 'Lunes a viernes', time: '9:00 a. m. a 6:00 p. m.' },
+    { days: 'Sábados', time: '8:00 a. m. a 6:00 p. m.' },
+  ],
+  hoursText: 'lunes a viernes de 9:00 a. m. a 6:00 p. m. y sábados de 8:00 a. m. a 6:00 p. m.',
+  hoursSpec: [
+    { days: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '09:00', closes: '18:00' },
+    { days: ['Saturday'], opens: '08:00', closes: '18:00' },
+  ],
 }
 
-// Mensaje confirmado por recepción. encodeURIComponent codifica saltos de línea, emoji y el signo +.
-export const WHATSAPP_MESSAGE = [
-  'Hola Fashion Dog, quiero reservar una cita 🐶',
-  'Nombre del perrito:',
-  'Apellido del dueño:',
-  'Raza:',
-  'Servicio: Baño / Baño + corte',
-  'Día y hora:',
-].join('\n')
-
-export const whatsappUrl = `https://wa.me/${business.whatsappNumber}?text=${encodeURIComponent(WHATSAPP_MESSAGE)}`
+/* ---------- WhatsApp: mensaje confirmado por recepción ---------- */
+// encodeURIComponent codifica saltos de línea, emoji y el signo +.
+export function buildWhatsappUrl(service = 'Baño / Baño + corte') {
+  const message = [
+    'Hola Fashion Dog, quiero reservar una cita 🐶',
+    'Nombre del perrito:',
+    'Apellido del dueño:',
+    'Raza:',
+    `Servicio: ${service}`,
+    'Día y hora:',
+  ].join('\n')
+  return `https://wa.me/${business.whatsappNumber}?text=${encodeURIComponent(message)}`
+}
+export const whatsappUrl = buildWhatsappUrl()
 
 export const mapsLink =
   'https://www.google.com/maps/search/?api=1&query=' +
@@ -43,7 +88,6 @@ export const mapsEmbed =
   encodeURIComponent('Av. Paracas 363, Urb. Salamanca, Ate, Lima, Perú') +
   '&output=embed'
 
-// Medios de pago confirmados por recepción.
 export const payments = {
   label: 'Medios de pago',
   items: [
@@ -53,15 +97,16 @@ export const payments = {
   ],
 }
 
-export const nav = [
-  { id: 'servicios', label: 'Servicios' },
+export const navAll = [
   { id: 'como-funciona', label: 'Cómo funciona' },
+  { id: 'servicios', label: 'Servicios' },
   { id: 'galeria', label: 'Galería' },
   { id: 'tipo-de-pelo', label: 'Tipo de pelo' },
   { id: 'donde-estamos', label: 'Dónde estamos' },
   { id: 'preguntas', label: 'Preguntas' },
 ]
 
+/* ---------- Hero: aquí vive el mensaje de transparencia (junto con el lema) ---------- */
 export const hero = {
   eyebrow: 'Peluquería canina en Salamanca, Ate',
   titleLines: ['Tu perro, bien cuidado.', 'Tú, bien informado.'],
@@ -69,87 +114,17 @@ export const hero = {
     'Te decimos qué servicio recibe tu perro, cuánto cuesta y cómo le fue cuando vienes por él. Sin sorpresas de precio ni de trato.',
   cta: 'Reservar por WhatsApp',
   ctaNote: 'Escribes por WhatsApp y te confirmamos el turno.',
-  proof: business.addressLine,
-}
-
-// POR CONFIRMAR: compromisos derivados de la frase de marca. Valídalos antes de publicar.
-export const commitments = {
-  eyebrow: 'Transparencia',
-  title: 'Sabes qué pasa con tu perro en cada paso',
-  items: [
-    {
-      icon: 'Receipt',
-      title: 'Precio claro antes de empezar',
-      text: 'Te decimos cuánto cuesta cada servicio antes de empezar. No hay cobros que no hayas aceptado.',
-    },
-    {
-      icon: 'Eye',
-      title: 'Sabes qué le hacemos',
-      text: 'Te explicamos si tu perro recibe baño o baño con corte, y qué necesita según su pelaje.',
-    },
-    {
-      icon: 'ChatCircleText',
-      title: 'Te contamos cómo estuvo',
-      text: 'Cuando vienes por él, te contamos cómo se portó y qué hicimos, con calma y sin apuro.',
-    },
+  chips: [
+    { icon: 'Clock', text: 'Lun a Sáb' },
+    { icon: 'CreditCard', text: 'Efectivo · Tarjeta · Yape' },
+    { icon: 'Tag', text: 'Perros grandes S/ 50' },
   ],
-  team: {
-    title: 'Quiénes lo atienden',
-    text: '{{nombre groomer}} y el equipo de Fashion Dog llevan {{años}} años cuidando perros en Salamanca.',
-  },
 }
 
-// Servicios y precios confirmados por recepción.
-export const services = {
-  eyebrow: 'Servicios y precios',
-  title: 'Dos servicios, precios claros',
-  intro: 'El precio depende del tamaño de tu perro. Te lo confirmamos por WhatsApp antes de reservar.',
-  items: [
-    {
-      icon: 'Bathtub',
-      title: 'Baño',
-      text: 'Baño con shampoo para perros, enjuague completo y secado.',
-    },
-    {
-      icon: 'Scissors',
-      title: 'Baño + corte',
-      text: 'El baño completo más corte según el tipo de pelo de tu perro.',
-    },
-  ],
-  notes: [
-    {
-      icon: 'Flask',
-      title: 'Shampoos',
-      text: 'Usamos 2 tipos de shampoo: {{shampoos}}.',
-    },
-    {
-      icon: 'Stethoscope',
-      title: 'Baño medicado',
-      text: 'Baño medicado solo con indicación de tu veterinario.',
-    },
-  ],
-  pricing: {
-    title: 'Precio según el tamaño',
-    tiers: [
-      { size: 'Perros pequeños', note: '', price: '{{precio}}' },
-      { size: 'Perros medianos', note: '', price: '{{precio}}' },
-      {
-        size: 'Perros grandes',
-        note: 'De tamaño Golden a Rottweiler',
-        price: 'S/ 50',
-        includes: '{{qué incluye}}',
-      },
-    ],
-  },
-}
-
-export const tagline = {
-  text: 'Fashion Dog Salamanca ofrece transparencia en el servicio. Sabes qué le hacemos a tu perro, cuánto cuesta y cómo le fue.',
-}
-
+/* ---------- Cómo funciona (incluye lo que antes eran los compromisos) ---------- */
 export const how = {
   eyebrow: 'Cómo funciona',
-  title: 'Tres pasos, todos claros',
+  title: 'Reservar es así de simple',
   steps: [
     {
       icon: 'WhatsappLogo',
@@ -167,6 +142,46 @@ export const how = {
       text: 'Te decimos qué le hicimos, cómo se portó y cada cuánto conviene volver.',
     },
   ],
+  team: {
+    title: 'Quiénes lo atienden',
+    text: '{{nombre groomer}} y el equipo de Fashion Dog llevan {{años}} años cuidando perros en Salamanca.',
+  },
+}
+
+/* ---------- Servicios y precios confirmados por recepción ---------- */
+export const services = {
+  eyebrow: 'Servicios y precios',
+  title: 'Elige el servicio de tu perro',
+  intro: 'Reserva por WhatsApp. El precio depende del tamaño de tu perro.',
+  reserve: 'Reservar este servicio',
+  items: [
+    {
+      icon: 'Bathtub',
+      title: 'Baño',
+      text: 'Baño con shampoo para perros, enjuague completo y secado.',
+      whatsappService: 'Baño',
+    },
+    {
+      icon: 'Scissors',
+      title: 'Baño + corte',
+      text: 'El baño completo más corte según el tipo de pelo de tu perro.',
+      whatsappService: 'Baño + corte',
+    },
+  ],
+  notes: [
+    { icon: 'Flask', text: 'Usamos 2 tipos de shampoo: {{shampoos}}.' },
+    { icon: 'Stethoscope', text: 'Baño medicado solo con indicación de tu veterinario.' },
+  ],
+  tiers: [
+    { size: 'Perros pequeños', note: '', price: '{{precio}}' },
+    { size: 'Perros medianos', note: '', price: '{{precio}}' },
+    { size: 'Perros grandes', note: 'De tamaño Golden a Rottweiler', price: 'S/ 50', includes: '{{qué incluye}}' },
+  ],
+}
+
+/* ---------- Lema: el otro lugar donde vive la transparencia ---------- */
+export const tagline = {
+  text: 'Ofrecemos transparencia en el servicio. Sabes qué le hacemos a tu perro, cuánto cuesta y cómo le fue.',
 }
 
 export const gallery = {
@@ -185,7 +200,6 @@ export const coats = {
     'Cada pelaje pide un cuidado distinto. Esta guía es general: tu perro puede necesitar otra frecuencia según su piel, su edad y su vida diaria.',
   bathLabel: 'Baño',
   careLabel: 'Cuidado',
-  servicesLabel: 'Servicio',
   items: [
     {
       icon: 'Sun',
@@ -193,15 +207,13 @@ export const coats = {
       examples: 'Beagle, Pug, Bulldog',
       bath: 'Cada 4 a 8 semanas',
       care: 'Cepillado semanal con guante o cepillo suave para retirar el pelo muerto.',
-      services: 'Baño',
     },
     {
       icon: 'Wind',
       name: 'Pelo largo y sedoso',
       examples: 'Shih tzu, Yorkshire, Maltés',
       bath: 'Cada 3 a 4 semanas',
-      care: 'Cepillado diario para que no se formen nudos. El corte de mantenimiento hace que sea más fácil de peinar.',
-      services: 'Baño o baño con corte',
+      care: 'Cepillado diario para que no se formen nudos. Un corte de mantenimiento lo hace más fácil de peinar.',
     },
     {
       icon: 'Cloud',
@@ -209,15 +221,13 @@ export const coats = {
       examples: 'Poodle, Bichón frisé, Schnauzer',
       bath: 'Cada 3 a 4 semanas',
       care: 'Cepillado frecuente y corte regular, porque el pelo rizado se enreda desde la raíz.',
-      services: 'Baño con corte',
     },
     {
       icon: 'Snowflake',
       name: 'Doble capa',
       examples: 'Husky, Pastor alemán, Golden retriever',
       bath: 'Cada 6 a 8 semanas',
-      care: 'Cepillado frecuente en época de muda. No lo rapes: el subpelo lo protege del calor y del frío, y rapar puede dañar el pelo nuevo.',
-      services: 'Baño',
+      care: 'Cepillado frecuente en época de muda. No lo rapes: el subpelo lo protege del calor y del frío.',
     },
   ],
   puppy: {
@@ -231,14 +241,21 @@ export const coats = {
   ],
 }
 
+/* ---------- Testimonios: se muestran solo cuando haya reales ---------- */
+// Cuando tengas testimonios reales, ponlos en "items" con { text, author, dog } sin llaves dobles.
 export const testimonials = {
   eyebrow: 'Familias de Fashion Dog',
   title: 'Lo que cuentan quienes ya vinieron',
-  items: [
+  items: [],
+  placeholderItems: [
     { text: '{{testimonio}}', author: '{{nombre cliente}}', dog: '{{nombre de su perro}}' },
     { text: '{{testimonio}}', author: '{{nombre cliente}}', dog: '{{nombre de su perro}}' },
     { text: '{{testimonio}}', author: '{{nombre cliente}}', dog: '{{nombre de su perro}}' },
   ],
+}
+export function testimonialItems() {
+  if (testimonials.items.length) return testimonials.items
+  return placeholdersOn() ? testimonials.placeholderItems : []
 }
 
 export const where = {
@@ -250,6 +267,12 @@ export const where = {
   contactLabel: 'Contacto',
   mapCta: 'Abrir en Google Maps',
   mapTitle: 'Mapa de Peluquería Canina Fashion Dog, Av. Paracas 363, Salamanca, Ate',
+  localAlt: [
+    'Fachada de la peluquería canina Fashion Dog en Av. Paracas 363, Salamanca',
+    'Zona de recepción de Fashion Dog',
+    'Zona de baño de Fashion Dog',
+  ],
+  localHint: ['Fachada', 'Recepción', 'Zona de baño'],
 }
 
 // Respuestas redactadas para ser útiles sin inventar políticas. Las políticas van como placeholder.
@@ -268,7 +291,7 @@ export const faqs = [
   },
   {
     q: '¿Dónde queda y a qué hora atienden?',
-    a: 'Estamos en Av. Paracas 363, Urb. Salamanca, en Ate. Atendemos a quienes vienen de Ate, Salamanca, San Borja, Lima y La Molina. Horario: {{horario}}.',
+    a: `Estamos en Av. Paracas 363, Urb. Salamanca, en Ate. Atendemos a quienes vienen de Ate, Salamanca, San Borja, Lima y La Molina. Horario: ${business.hoursText}.`,
   },
   {
     q: '¿Tratarán bien a mi perro?',
@@ -303,7 +326,7 @@ export const finalCta = {
 }
 
 export const footer = {
-  blurb: 'Peluquería canina en Salamanca, Ate. Transparencia en el servicio.',
+  blurb: 'Peluquería canina en Salamanca, Ate.',
   privacy: 'Privacidad',
   terms: 'Términos',
   rights: '© 2026 Peluquería Canina Fashion Dog.',
@@ -316,9 +339,4 @@ export const altText = {
   galeria: (n) => `Perro arreglado en Fashion Dog, foto ${n} de la galería`,
   antes: (n) => `Perro antes del servicio de peluquería, caso ${n}`,
   despues: (n) => `Mismo perro después del servicio de peluquería, caso ${n}`,
-  local: [
-    'Fachada de la peluquería canina Fashion Dog en Av. Paracas 363, Salamanca',
-    'Zona de recepción de Fashion Dog',
-    'Zona de baño de Fashion Dog',
-  ],
 }

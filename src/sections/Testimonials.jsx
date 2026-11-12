@@ -1,21 +1,18 @@
 import { Quotes } from '@phosphor-icons/react'
-import { testimonials } from '../content.js'
+import { testimonialItems, testimonials } from '../content.js'
 import { Reveal, Section, SectionHeader, T } from '../components/ui.jsx'
 
-export default function Testimonials() {
+// Home solo dibuja esta sección si testimonialItems() trae testimonios reales.
+export default function Testimonials({ prev, wave }) {
+  const items = testimonialItems()
   return (
-    <Section id="testimonios" bg="bg-orange-soft">
+    <Section id="testimonios" bg="cream" prev={prev} wave={wave}>
       <SectionHeader eyebrow={testimonials.eyebrow} title={testimonials.title} />
 
       <ul className="mt-10 grid gap-4 md:grid-cols-3">
-        {testimonials.items.map((t, i) => (
-          <Reveal
-            as="li"
-            key={i}
-            delay={i * 80}
-            className="flex flex-col rounded-2xl border border-ink/10 bg-cream p-6"
-          >
-            <Quotes size={32} weight="fill" className="text-orange" aria-hidden="true" />
+        {items.map((t, i) => (
+          <Reveal as="li" key={i} delay={i * 80} className="flex flex-col rounded-3xl bg-turquoise-soft p-6">
+            <Quotes size={40} weight="fill" className="text-orange" aria-hidden="true" />
             <blockquote className="body-3 mt-4 flex-1">
               <T>{t.text}</T>
             </blockquote>

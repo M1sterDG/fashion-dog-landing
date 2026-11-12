@@ -1,12 +1,14 @@
-Pon aquí tus fotos con estos nombres exactos. Mientras falte una, la página
-muestra un marcador con el nombre del archivo esperado.
+Pon aquí tus fotos con estos nombres exactos y luego agrega cada nombre a la lista
+"availableImages" en src/content.js. Una foto que no está en esa lista no se muestra,
+y una sección de fotos sin ninguna foto real no aparece en la página.
+Para ver los marcadores mientras desarrollas, abre http://localhost:5173/?placeholders=1
 
-logo.png o logo.svg   fondo transparente (después corre: npm run brand:colors)
-logo-redondo.png
-hero.jpg              perro en la peluquería, mínimo 1600 px de ancho (también es la og:image)
-antes-1.jpg ... antes-6.jpg
+logo.png                fondo transparente (ya está). logo-original.png es el archivo sin procesar
+                        y es el que lee "npm run brand:colors" para sacar los colores
+hero.jpg                perro en la peluquería, mínimo 1600 px de ancho (también es la og:image)
+galeria-1.jpg ... galeria-8.jpg    perros ya arreglados (se muestran hasta 5)
+antes-1.jpg ... antes-6.jpg        van en pareja con despues-N.jpg (se muestran hasta 3 casos)
 despues-1.jpg ... despues-6.jpg
-galeria-1.jpg ... galeria-8.jpg    perros ya arreglados
 local-1.jpg ... local-3.jpg        fachada, recepción, zona de baño
-equipo-1.jpg                       groomers
-video-1.mp4                        opcional, clip corto en bucle
+equipo-1.jpg                       groomers (si no hay, no aparece el bloque "Quiénes lo atienden")
+video-1.mp4                        opcional, clip corto en bucle (reemplaza la segunda foto del bento)

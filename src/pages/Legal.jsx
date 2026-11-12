@@ -2,6 +2,7 @@ import { ArrowLeft } from '@phosphor-icons/react'
 import { business } from '../content.js'
 import { Logo, T } from '../components/ui.jsx'
 import Footer from '../sections/Footer.jsx'
+import { url } from '../lib/url.js'
 
 const updated = '12 de noviembre de 2026'
 
@@ -53,7 +54,7 @@ const terms = {
     {
       h: 'Precios y horarios',
       p: [
-        'El precio final y el horario de atención se confirman por WhatsApp antes de reservar. Precios: {{precio}}. Horario: {{horario}}.',
+        `El precio final depende del tamaño de tu perro y se confirma por WhatsApp antes de reservar. Horario de atención: ${business.hoursText}.`,
       ],
     },
     {
@@ -88,11 +89,11 @@ export default function Legal({ path }) {
     <>
       <header className="bg-cream pt-4">
         <div className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4">
-          <a href="/" aria-label="Ir al inicio" className="rounded-full">
+          <a href={url()} aria-label="Ir al inicio" className="rounded-full">
             <Logo className="h-12" />
           </a>
           <a
-            href="/"
+            href={url()}
             className="button-sm inline-flex min-h-10 items-center gap-2 rounded-full border border-ink/20 px-3 py-2 transition-colors duration-300 ease-base hover:bg-turquoise-soft"
           >
             <ArrowLeft size={20} weight="bold" aria-hidden="true" />

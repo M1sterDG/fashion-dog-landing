@@ -1,9 +1,14 @@
 import Home from './pages/Home.jsx'
 import Legal, { legalPages } from './pages/Legal.jsx'
 import NotFound from './pages/NotFound.jsx'
+import { BASE } from './lib/url.js'
 
 export function normalizePath(p) {
-  const clean = (p || '/').replace(/index\.html$/, '').replace(/\/+$/, '')
+  // En GitHub Pages el sitio vive bajo /nombre-del-repo/: se quita ese prefijo antes de enrutar.
+  const base = BASE.replace(/\/$/, '')
+  let path = p || '/'
+  if (base && (path === base || path.startsWith(base + '/'))) path = path.slice(base.length) || '/'
+  const clean = path.replace(/index\.html$/, '').replace(/\/+$/, '')
   return clean === '' ? '/' : clean
 }
 

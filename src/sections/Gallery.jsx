@@ -1,34 +1,31 @@
 import { useEffect, useState } from 'react'
 import { ArrowsLeftRight } from '@phosphor-icons/react'
-import { altText, gallery } from '../content.js'
+import { LIMITS, altText, gallery, has, pairSlots, photoSlots } from '../content.js'
 import { Img, Reveal, Section, SectionHeader } from '../components/ui.jsx'
 import { cn } from '../lib/hooks.js'
+import { url } from '../lib/url.js'
 
-const bento = [
-  'col-span-2 row-span-2', // 1: grande
-  '',
-  '',
-  '',
-  '',
-  'col-span-2', // 6: ancho (puede ser el video)
-  '',
-  '',
-]
+// Cómo se reparte el bento según cuántas fotos haya (1 a 5). Siempre queda un rectángulo completo.
+const layouts = {
+  1: ['col-span-2 row-span-2 md:col-span-4'],
+  2: ['row-span-2 md:col-span-2', 'row-span-2 md:col-span-2'],
+  3: ['col-span-2 row-span-2', 'md:col-span-2', 'md:col-span-2'],
+  4: ['col-span-2 row-span-2', '', '', 'col-span-2'],
+  5: ['col-span-2 row-span-2', '', '', '', ''],
+}
 
-// video-1.mp4 es opcional. vite.config.js detecta si existe el archivo al iniciar.
-const hasVideo = typeof __HAS_VIDEO__ !== 'undefined' && __HAS_VIDEO__
-
+// video-1.mp4 es opcional: si está en availableImages, reemplaza a la segunda foto.
 function BentoVideo() {
   const [playable, setPlayable] = useState(false)
   useEffect(() => {
-    // Con movimiento reducido no se reproduce solo: se muestra la foto.
+    // Con movimiento reducido no se reproduce solo: se queda la foto.
     setPlayable(!window.matchMedia('(prefers-reduced-motion: reduce)').matches)
   }, [])
   if (!playable) return null
   return (
     <video
       className="absolute inset-0 h-full w-full object-cover"
-      src="/img/video-1.mp4"
+      src={url('img/video-1.mp4')}
       autoPlay
       muted
       loop
@@ -47,24 +44,22 @@ function BeforeAfter({ n }) {
       aria-pressed={after}
       onClick={() => setAfter((v) => !v)}
       aria-label={`Caso ${n}: mostrar ${after ? 'antes' : 'después'}`}
-      className="group relative block aspect-4/5 w-full overflow-hidden rounded-2xl border border-ink/10 text-left"
+      className="relative block aspect-4/3 w-full overflow-hidden rounded-2xl bg-cream text-left sm:aspect-4/5"
     >
       <Img
         file={`antes-${n}.jpg`}
         alt={altText.antes(n)}
-        tone="orange"
         hint="Foto del perro antes"
         className={cn('absolute inset-0 transition-opacity duration-500 ease-base', after ? 'opacity-0' : 'opacity-100')}
       />
       <Img
         file={`despues-${n}.jpg`}
         alt={altText.despues(n)}
-        tone="turquoise"
         hint="Foto del perro después"
         className={cn('absolute inset-0 transition-opacity duration-500 ease-base', after ? 'opacity-100' : 'opacity-0')}
       />
       {/* Etiqueta: 16px de radio menos 12px de margen da 4px (rounded-sm) */}
-      <span className="caption-3 absolute bottom-3 left-3 flex items-center gap-1 rounded-sm bg-cream px-2 py-1 uppercase tracking-wide">
+      <span className="caption-3 absolute bottom-3 left-3 flex items-center gap-1 rounded-sm bg-cream px-2 py-1 uppercase tracking-wide text-ink">
         <ArrowsLeftRight size={16} weight="bold" aria-hidden="true" />
         {after ? gallery.after : gallery.before}
       </span>
@@ -72,43 +67,46 @@ function BeforeAfter({ n }) {
   )
 }
 
-export default function Gallery() {
+// Fotos que se van a mostrar. Si ambas listas están vacías, Home no dibuja la sección.
+export function galleryContent() {
+  return { bento: photoSlots('galeria', LIMITS.bento), pairs: pairSlots(LIMITS.beforeAfter) }
+}
+
+export default function Gallery({ prev, wave }) {
+  const { bento, pairs } = galleryContent()
+  const layout = layouts[bento.length] ?? []
+  const videoSlot = has('video-1.mp4') ? 1 : -1
+
   return (
-    <Section id="galeria" bg="bg-turquoise-soft">
+    <Section id="galeria" bg="cream" prev={prev} wave={wave}>
       <SectionHeader eyebrow={gallery.eyebrow} title={gallery.title} />
 
-      {/* Bento */}
-      <Reveal className="mt-10 grid auto-rows-[10rem] grid-cols-2 gap-3 md:auto-rows-[14rem] md:grid-cols-4">
-        {bento.map((span, i) => {
-          const n = i + 1
-          const isVideoSlot = n === 6 && hasVideo
-          return (
-            <div key={n} className={cn('relative overflow-hidden rounded-2xl', span)}>
-              <Img
-                file={`galeria-${n}.jpg`}
-                alt={altText.galeria(n)}
-                tone={i % 3 === 0 ? 'orange' : 'cream'}
-                hint="Perro ya arreglado"
-                className="h-full w-full"
-              />
-              {isVideoSlot && <BentoVideo />}
+      {bento.length > 0 && (
+        <Reveal className="mt-10 grid auto-rows-[10rem] grid-cols-2 gap-3 md:auto-rows-[14rem] md:grid-cols-4">
+          {bento.map((n, i) => (
+            <div key={n} className={cn('relative overflow-hidden rounded-2xl bg-orange-soft', layout[i])}>
+              <Img file={`galeria-${n}.jpg`} alt={altText.galeria(n)} hint="Perro ya arreglado" className="h-full w-full" />
+              {i === videoSlot && <BentoVideo />}
             </div>
-          )
-        })}
-      </Reveal>
+          ))}
+        </Reveal>
+      )}
 
-      {/* Antes y después */}
-      <Reveal className="mt-16 max-w-[680px]">
-        <h3 className="heading-5">{gallery.beforeAfterTitle}</h3>
-        <p className="body-3 mt-2 text-ink/70">{gallery.beforeAfterHint}</p>
-      </Reveal>
-      <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-3 lg:gap-4">
-        {[1, 2, 3, 4, 5, 6].map((n, i) => (
-          <Reveal key={n} delay={(i % 3) * 80}>
-            <BeforeAfter n={n} />
+      {pairs.length > 0 && (
+        <>
+          <Reveal className="mt-16 max-w-[680px]">
+            <h3 className="heading-5">{gallery.beforeAfterTitle}</h3>
+            <p className="body-3 mt-2 text-ink/70">{gallery.beforeAfterHint}</p>
           </Reveal>
-        ))}
-      </div>
+          <div className="mt-6 grid gap-3 sm:grid-cols-3 lg:gap-4">
+            {pairs.map((n, i) => (
+              <Reveal key={n} delay={i * 80}>
+                <BeforeAfter n={n} />
+              </Reveal>
+            ))}
+          </div>
+        </>
+      )}
     </Section>
   )
 }

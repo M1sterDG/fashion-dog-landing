@@ -1,4 +1,11 @@
-import { SITE_URL, business, faqs } from './content.js'
+import { business, faqs } from './content.js'
+
+// Dominio y subruta. En producción en el dominio propio no hace falta definir nada.
+// Para GitHub Pages el workflow define SITE_URL, SITE_BASE y NOINDEX=1 (copia de prueba, no se indexa).
+const SITE_URL = (process.env.SITE_URL || 'https://peluqueriacaninafashiondog.com').replace(/\/$/, '')
+const BASE = process.env.SITE_BASE || '/'
+const NOINDEX = process.env.NOINDEX === '1'
+const ROOT = SITE_URL + BASE
 
 // En el schema no deben salir los {{placeholders}}.
 const plain = (t) => t.replace(/\{\{[^}]+\}\}/g, 'por confirmar')
@@ -7,8 +14,8 @@ export const seo = {
   title: 'Peluquería canina en Salamanca, Ate | Fashion Dog',
   description:
     'Peluquería canina en Salamanca, Ate. Baño y baño con corte con precio claro. Pagas con efectivo, tarjeta o Yape. Reserva por WhatsApp.',
-  image: `${SITE_URL}/img/hero.jpg`,
-  url: `${SITE_URL}/`,
+  image: `${ROOT}img/hero.jpg`,
+  url: ROOT,
 }
 
 // Metadatos por ruta. Home se indexa; privacidad y términos se indexan sin destacar; el 404 no.
@@ -35,11 +42,11 @@ const esc = (s) => s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g
 
 export function headTags(path = '/') {
   const p = pages[path] ?? pages['/404']
-  const url = `${SITE_URL}${path === '/' || path === '/404' ? '/' : path}`
+  const url = path === '/' || path === '/404' ? ROOT : `${ROOT}${path.slice(1)}`
   return [
     `<title>${esc(p.title)}</title>`,
     `<meta name="description" content="${esc(p.description)}" />`,
-    `<meta name="robots" content="${p.robots}" />`,
+    `<meta name="robots" content="${NOINDEX ? 'noindex,nofollow' : p.robots}" />`,
     `<link rel="canonical" href="${url}" />`,
     `<meta property="og:type" content="website" />`,
     `<meta property="og:locale" content="es_PE" />`,
@@ -66,10 +73,10 @@ export function localBusinessJsonLd() {
   return {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
-    '@id': `${SITE_URL}/#negocio`,
+    '@id': `${ROOT}#negocio`,
     name: business.name,
     description: seo.description,
-    url: SITE_URL,
+    url: ROOT,
     image: seo.image,
     telephone: business.phoneIntl,
     email: business.email,
@@ -81,6 +88,12 @@ export function localBusinessJsonLd() {
       addressCountry: business.country,
     },
     areaServed: business.zones.map((name) => ({ '@type': 'Place', name })),
+    openingHoursSpecification: business.hoursSpec.map((h) => ({
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: h.days,
+      opens: h.opens,
+      closes: h.closes,
+    })),
     paymentAccepted: 'Efectivo, tarjeta, Yape',
     currenciesAccepted: 'PEN',
     sameAs: [business.facebook],

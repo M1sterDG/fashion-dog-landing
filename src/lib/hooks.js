@@ -26,23 +26,24 @@ export function useRevealOnce() {
   return [ref, visible]
 }
 
-// Devuelve el id de la sección que cruza la franja central de la pantalla.
-export function useActiveSection(ids) {
+// Sección activa del menú. Observa todas las secciones de <main>: si la que cruza la franja
+// central no está en el menú (por ejemplo el hero al estar arriba), no hay opción activa.
+export function useActiveSection(navIds) {
   const [active, setActive] = useState(null)
   useEffect(() => {
     if (typeof IntersectionObserver === 'undefined') return
-    const els = ids.map((id) => document.getElementById(id)).filter(Boolean)
+    const sections = [...document.querySelectorAll('main > section[id]')]
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
-          if (e.isIntersecting) setActive(e.target.id)
+          if (e.isIntersecting) setActive(navIds.includes(e.target.id) ? e.target.id : null)
         })
       },
       { rootMargin: '-45% 0px -50% 0px' },
     )
-    els.forEach((el) => io.observe(el))
+    sections.forEach((el) => io.observe(el))
     return () => io.disconnect()
-  }, [ids])
+  }, [navIds])
   return active
 }
 

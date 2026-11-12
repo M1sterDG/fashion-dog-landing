@@ -1,6 +1,6 @@
 import { Clock, MapPin, Phone, WhatsappLogo } from '@phosphor-icons/react'
-import { altText, business, mapsEmbed, mapsLink, where, whatsappUrl } from '../content.js'
-import { Button, Img, Reveal, Section, SectionHeader, T, trackWhatsApp } from '../components/ui.jsx'
+import { LIMITS, business, mapsEmbed, mapsLink, photoSlots, where, whatsappUrl } from '../content.js'
+import { Button, Img, Reveal, Section, SectionHeader, trackWhatsApp } from '../components/ui.jsx'
 
 function Row({ icon: IconC, label, children }) {
   return (
@@ -16,13 +16,14 @@ function Row({ icon: IconC, label, children }) {
   )
 }
 
-export default function Location() {
+export default function Location({ prev, wave }) {
+  const local = photoSlots('local', LIMITS.local, 3)
   return (
-    <Section id="donde-estamos" bg="bg-cream">
+    <Section id="donde-estamos" bg="turquoise-soft" prev={prev} wave={wave}>
       <SectionHeader eyebrow={where.eyebrow} title={where.title} />
 
       <div className="mt-10 grid gap-4 lg:grid-cols-2">
-        <Reveal className="flex min-w-0 flex-col gap-6 rounded-3xl border border-ink/10 bg-turquoise-soft p-6 md:p-8">
+        <Reveal className="flex min-w-0 flex-col gap-4 rounded-3xl bg-cream p-6">
           <Row icon={MapPin} label={where.addressLabel}>
             {business.addressLine}
           </Row>
@@ -30,7 +31,7 @@ export default function Location() {
           <Row icon={MapPin} label={where.zonesLabel}>
             <ul className="flex flex-wrap gap-2">
               {business.zones.map((z) => (
-                <li key={z} className="body-5 rounded-full border border-ink/15 bg-cream px-3 py-1">
+                <li key={z} className="body-5 rounded-full border border-ink/15 bg-turquoise-soft px-3 py-1">
                   {z}
                 </li>
               ))}
@@ -38,7 +39,13 @@ export default function Location() {
           </Row>
 
           <Row icon={Clock} label={where.hoursLabel}>
-            <T>{business.hours}</T>
+            <ul>
+              {business.hours.map((h) => (
+                <li key={h.days} className="body-5">
+                  <span className="body-4">{h.days}:</span> {h.time}
+                </li>
+              ))}
+            </ul>
           </Row>
 
           <Row icon={Phone} label={where.contactLabel}>
@@ -70,7 +77,7 @@ export default function Location() {
           </div>
         </Reveal>
 
-        <Reveal delay={100} className="min-h-80 overflow-hidden rounded-3xl border border-ink/10 bg-orange-soft">
+        <Reveal delay={100} className="min-h-80 overflow-hidden rounded-3xl bg-cream">
           <iframe
             title={where.mapTitle}
             src={mapsEmbed}
@@ -81,19 +88,20 @@ export default function Location() {
         </Reveal>
       </div>
 
-      <div className="mt-4 grid grid-cols-3 gap-3 md:gap-4">
-        {altText.local.map((alt, i) => (
-          <Reveal key={i} delay={i * 80}>
-            <Img
-              file={`local-${i + 1}.jpg`}
-              alt={alt}
-              tone={i === 1 ? 'orange' : 'turquoise'}
-              hint={['Fachada', 'Recepción', 'Zona de baño'][i]}
-              className="aspect-square rounded-2xl"
-            />
-          </Reveal>
-        ))}
-      </div>
+      {local.length > 0 && (
+        <div className="mt-4 grid grid-cols-3 gap-3 md:gap-4">
+          {local.map((n, i) => (
+            <Reveal key={n} delay={i * 80}>
+              <Img
+                file={`local-${n}.jpg`}
+                alt={where.localAlt[n - 1]}
+                hint={where.localHint[n - 1]}
+                className="aspect-square rounded-2xl"
+              />
+            </Reveal>
+          ))}
+        </div>
+      )}
     </Section>
   )
 }
